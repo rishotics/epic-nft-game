@@ -289,6 +289,80 @@ contract NFTEpicGame is ERC721, ReentrancyGuard, Ownable {
         return bigBoss;
     }
 
+    function tokenURI(uint256 _tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
+        CharacterAttributes memory charAttributes = nftHolderAttributes[
+            _tokenId
+        ];
+        string memory strHp = Strings.toString(charAttributes.hp);
+        string memory strMaxHp = Strings.toString(charAttributes.maxHp);
+
+        string memory specialAttacksStr = "";
+        string memory attacksStr = "";
+
+        for (uint256 i = 0; i < charAttributes.specialAttacks.length; i++) {
+            uint256 index = charAttributes.specialAttacks[i];
+            specialAttacksStr = string(
+                abi.encodePacked(
+                    specialAttacksStr,
+                    ', {"trait_type": "Special Attack - ',
+                    allSpecialAttacks[index].specialAttackName,
+                    '", "value": ',
+                    Strings.toString(
+                        allSpecialAttacks[index].specialAttackDamage
+                    ),
+                    "}"
+                )
+            );
+        }
+
+        for (uint256 i = 0; i < charAttributes.attacks.length; i++) {
+            uint256 index = charAttributes.attacks[i];
+            attacksStr = string(
+                abi.encodePacked(
+                    attacksStr,
+                    ', {"trait_type": "',
+                    allAttacks[index].attackName,
+                    '", "value": ',
+                    Strings.toString(allAttacks[index].attackDamage),
+                    "}"
+                )
+            );
+        }
+
+        string memory json = Base64.encode(
+            bytes(
+                string(
+                    abi.encodePacked(
+                        '{"name": "',
+                        charAttributes.name,
+                        " -- NFT #: ",
+                        Strings.toString(_tokenId),
+                        '", "description": "This is an NFT that lets people play in the Epic NFT Game!", "image": "',
+                        charAttributes.imageURI,
+                        '", "attributes": [{"trait_type": "Health Points", "value": ',
+                        strHp,
+                        ', "max_value": ',
+                        strMaxHp,
+                        "}",
+                        specialAttacksStr,
+                        attacksStr,
+                        "]}"
+                    )
+                )
+            )
+        );
+
+        string memory output = string(
+            abi.encodePacked("data:application/json;base64,", json)
+        );
+        return output;
+    }
+
 
 
 
