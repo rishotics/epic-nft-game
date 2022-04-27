@@ -76,23 +76,32 @@ contract NFTEpicGame is ERC721, ReentrancyGuard, Ownable {
         string[] memory characterImageURI,
         uint256[] memory characterMaxHp,
         uint256[][] memory characterAttacks,
+        // All the boss attributes
         string memory bossName,
         string memory bossImageURI,
         uint256 bossHp,
         uint256 bossAttackDamage,
         address epicTokenAddress
-    ) ERC721("Heros", "HERO") 
+    ) ERC721("Heroes", "HERO") 
     {
         epicToken = epicTokenAddress;
-        for(uint i = 0; i<= characterName.length; i++){
-            CharacterAttributes memory ca;
-            ca.characterIndex = i;
-            ca.name = characterName[i];
-            ca.imageURI = characterImageURI[i];
-            ca.hp = characterMaxHp[i];
-            ca.maxHp = characterMaxHp[i];
-            ca.attacks = characterAttacks[i];
-            defaultCharacters.push(ca);
+        for(uint i = 0; i< characterName.length; i++){
+            CharacterAttributes memory charAttribute;
+            charAttribute.characterIndex = i;
+            charAttribute.name = characterName[i];
+            charAttribute.imageURI = characterImageURI[i];
+            charAttribute.hp = characterMaxHp[i];
+            charAttribute.maxHp = characterMaxHp[i];
+            charAttribute.attacks = characterAttacks[i];
+
+            defaultCharacters.push(charAttribute);
+            CharacterAttributes memory c = defaultCharacters[i];
+            console.log(
+                "Done initializing %s w/ HP %s, img %s",
+                c.name,
+                c.hp,
+                c.imageURI
+            );
         }
         _tokenIds.increment();
         bigBoss = BigBoss({

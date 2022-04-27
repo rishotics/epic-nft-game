@@ -5,11 +5,11 @@ const main = async () => {
   let accounts: Signer[];
   accounts = await ethers.getSigners();
 
-  const tokenFactory = await ethers.getContractFactory("EPICToken.sol");
+  const tokenFactory = await ethers.getContractFactory("EPICToken");
   const epicToken = await tokenFactory.deploy("EPIC Token", "EPIC");
   console.log(`epic TOekn address: `, epicToken.address);
 
-  const gameContractFactory = await ethers.getContractFactory("NFTEpicGame.sol");
+  const gameContractFactory = await ethers.getContractFactory("NFTEpicGame");
   const gameContract = await gameContractFactory.deploy(
     // characterName
     ["Iron Man", "Thor", "Spider Man", "Captain America"],
